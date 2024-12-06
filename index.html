@@ -305,26 +305,9 @@
       <div class="col-12 ">
           <div class="mb-3 ">
            
-            <!-- Form untuk mengirim komentar -->
-    <div class="comment-form">
-      <input type="text" id="name" placeholder="Nama" required>
-      <br/>
-      
-      <input type="radio" id="attendance" name="attendance" value="&#10004;">
-      <label for="attendance">Hadir</label>
-      <input type="radio" id="attendance" name="attendance" value="&#10008;">
-      <label for="attendance">Tidak Hadir</label>
-      <br>
-      <textarea id="commentText" placeholder="Tulis komentar..." required></textarea>
-      <br>
-      <button onclick="submitComment()">Kirim Komentar</button>
-  </div>
-
-  <!-- Bagian untuk menampilkan komentar -->
-  <div class="comments-section">
-      <button onclick="toggleComments()">Tampilkan Semua Ucapan</button>
-      <div id="comments-container"></div>
-  </div>
+           <div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/id_ID/sdk.js#xfbml=1&version=v21.0"></script>
+            <div class="fb-comments" data-href="https://ridashanum22.github.io/Imron-Iik05/" data-width="" data-numposts="5"></div>
 
           </div>
         </div>
@@ -608,119 +591,7 @@
 
   </script>
 
-<script>
-  // Fungsi untuk menyimpan komentar ke localStorage
-  function saveComments(comments) {
-      localStorage.setItem('comments', JSON.stringify(comments));
-  }
 
-  // Fungsi untuk mendapatkan komentar dari localStorage
-  function getComments() {
-      return JSON.parse(localStorage.getItem('comments')) || [];
-  }
-
-  // Fungsi untuk mengirim komentar
-  function submitComment() {
-      const name = document.getElementById('name').value;
-      const attendance = document.querySelector('input[name="attendance"]:checked')?.value;
-      const commentText = document.getElementById('commentText').value;
-
-      if (name && attendance && commentText) {
-          const comments = getComments();
-          const newComment = {
-              name,
-              attendance,
-              commentText,
-              replies: [],
-              id: new Date().getTime() // Unik ID berdasarkan waktu
-          };
-          comments.push(newComment);
-          saveComments(comments);
-          document.getElementById('name').value = '';
-          document.getElementById('commentText').value = '';
-          displayComments(comments);
-      } else {
-          alert("Semua field harus diisi!");
-      }
-  }
-
-  // Fungsi untuk menampilkan komentar
-  function displayComments(comments, limit = 5) {
-      const container = document.getElementById('comments-container');
-      container.innerHTML = ''; // Kosongkan kontainer sebelum menambah komentar
-
-      const commentsToShow = comments.slice(0, limit);
-      commentsToShow.forEach(comment => {
-          const commentDiv = document.createElement('div');
-          commentDiv.className = 'comment';
-          commentDiv.innerHTML = `
-              <strong>${comment.name}</strong> (${comment.attendance})<br>
-              ${comment.commentText}<br>
-              <div class="comment-actions">
-                  <i onclick="replyComment(${comment.id})">Balas</i> |
-                  <i onclick="deleteComment(${comment.id})">Hapus</i>
-              </div>
-              <div id="replies-${comment.id}"></div>
-          `;
-          container.appendChild(commentDiv);
-          displayReplies(comment.replies, comment.id);
-      });
-  }
-
-  // Fungsi untuk menampilkan balasan pada komentar
-  function displayReplies(replies, commentId) {
-      const repliesContainer = document.getElementById(`replies-${commentId}`);
-      repliesContainer.innerHTML = '';
-      replies.forEach(reply => {
-          const replyDiv = document.createElement('div');
-          replyDiv.className = 'comment';
-          replyDiv.innerHTML = `
-              <strong>${reply.name}</strong>: ${reply.commentText}
-          `;
-          repliesContainer.appendChild(replyDiv);
-      });
-  }
-
-  // Fungsi untuk membalas komentar
-  function replyComment(commentId) {
-      const name = prompt("Nama Anda:");
-      const replyText = prompt("Tulis balasan:");
-      if (name && replyText) {
-          const comments = getComments();
-          const comment = comments.find(c => c.id === commentId);
-          comment.replies.push({ name, commentText: replyText });
-          saveComments(comments);
-          displayComments(comments);
-      }
-  }
-
-  // Fungsi untuk menghapus komentar
-  function deleteComment(commentId) {
-      const comments = getComments();
-      const updatedComments = comments.filter(c => c.id !== commentId);
-      saveComments(updatedComments);
-      displayComments(updatedComments);
-  }
-
-  // Fungsi untuk menampilkan 5 komentar atau semua komentar
-  function toggleComments() {
-      const comments = getComments();
-      const button = document.querySelector('button');
-      if (button.innerText === 'Tampilkan 5 Komentar') {
-          displayComments(comments, comments.length); // Tampilkan semua
-          button.innerText = 'Tampilkan Semua Komentar';
-      } else {
-          displayComments(comments, 5); // Tampilkan hanya 5
-          button.innerText = 'Tampilkan 5 Komentar';
-      }
-  }
-
-  // Menampilkan komentar saat halaman dimuat
-  window.onload = function() {
-      const comments = getComments();
-      displayComments(comments, 5); // Menampilkan 5 komentar pertama
-  };
-</script>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
